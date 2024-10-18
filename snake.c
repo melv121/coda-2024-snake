@@ -110,9 +110,21 @@ void updateSnake() {
         case RIGHT: snake.body[0].x += 1; break;
     }
 
-    // Vérifier si le serpent mange la nourriture
+    
     if (snake.body[0].x == food.position.x && snake.body[0].y == food.position.y) {
+        
+        Position newSegment = snake.body[snake.length - 1];
         snake.length++;
+        snake.body[snake.length - 1] = newSegment;
+
+        
+        switch (snake.direction) {
+            case UP: snake.body[snake.length - 1].y += 1; break;
+            case DOWN: snake.body[snake.length - 1].y -= 1; break;
+            case LEFT: snake.body[snake.length - 1].x += 1; break;
+            case RIGHT: snake.body[snake.length - 1].x -= 1; break;
+        }
+
         placeFood();
     }
 }
@@ -124,7 +136,7 @@ int checkCollisions() {
         return 1;
     }
 
-    // Vérifier les collisions avec le corps du serpent
+    
     for (int i = 1; i < snake.length; i++) {
         if (snake.body[0].x == snake.body[i].x && snake.body[0].y == snake.body[i].y) {
             return 1;
@@ -135,7 +147,7 @@ int checkCollisions() {
 }
 
 void renderGame(SDL_Renderer* renderer) {
-    // Rendre les murs
+    
     SDL_Rect wallRect;
     for (int x = 0; x < GRID_WIDTH; x++) {
         wallRect = (SDL_Rect){x * TILE_SIZE, 0, TILE_SIZE, TILE_SIZE};
@@ -150,7 +162,7 @@ void renderGame(SDL_Renderer* renderer) {
         SDL_RenderCopy(renderer, wallTexture, NULL, &wallRect);
     }
 
-    // Rendre la tête du serpent
+    
     SDL_Rect headRect = {snake.body[0].x * TILE_SIZE, snake.body[0].y * TILE_SIZE, TILE_SIZE, TILE_SIZE};
     switch (snake.direction) {
         case UP: SDL_RenderCopy(renderer, headUpTexture, NULL, &headRect); break;
